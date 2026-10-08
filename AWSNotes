@@ -1,0 +1,701 @@
+AWS – Few Line Understanding
+Region = Location
+Data Center ≠ Availability Zone (AZ)
+•	Availability Zone = One or more data centers
+•	India has two AWS Regions: 1. Mumbai 2. Hyderabad
+•	Each Region has multiple AZs.
+Each Region has multiple AZs. Does this mean:
+1.	If any disaster happens in one AZ, another AZ may help maintain availability.
+2.	If any technical glitches happen in one AZ, another AZ may help maintain availability.
+EC2 – Elastic Compute Cloud:
+1.	AWS first started in us-east-1 (N. Virginia).
+2.	Here cost is sometimes less compared with other locations, depending on the service.
+3.	AWS introduces many new services/features from us-east-1 (N. Virginia), but not every new service starts there.
+Security Groups = Firewall
+1.	Ingress / Inbound = Inbound traffic
+2.	Egress / Outbound = Outbound traffic
+Authentication Modes:
+1.	What you know → Username and Password
+2.	What you have → OTP / Authentication device
+3.	What you are → Face authentication, Fingerprint, Retina scan
+
+IAM:
+AWS IAM (Identity and Access Management)
+IAM = Identity and Access Management.
+The AWS root user has complete access to the AWS account and can perform almost any action. Because giving everyone such high-level access is not secure and can lead to accidental changes or misuse, AWS provides IAM to control who can access which AWS resources and what actions they are allowed to perform.
+Why do we use IAM?
+IAM helps us implement controlled and secure access to AWS resources.
+With IAM, we can:
+•	Create users for individuals who need AWS access.
+•	Create groups and add users with similar responsibilities to those groups.
+•	Create roles that provide a specific set of permissions.
+•	Create policies that define exactly what actions are allowed or denied.
+•	Give users or roles specific permissions instead of giving unnecessary full access.
+•	Follow the Principle of Least Privilege — give only the permissions required to perform the job.
+•	Control access to services such as EC2, S3, RDS, Lambda, etc.
+Example
+Suppose an organization has:
+•	Developer → needs access to EC2 and application resources.
+•	Database Administrator → needs access to RDS.
+•	Developer team → several developers need similar permissions.
+Instead of giving everyone full AWS access, we can:
+Create users → Add users to groups → Attach appropriate policies → Give only required permissions.
+For example:
+Developers Group → EC2 permissions
+DBA Group → RDS permissions
+This reduces the possibility of unauthorized access, accidental changes, and misuse of resources.
+Important IAM Components
+1. User
+Represents an individual or application identity that needs AWS access.
+2. Group
+A collection of IAM users. We can attach permissions to the group so that all users in that group receive the required permissions.
+3. Policy
+A JSON document that defines what actions are Allowed or Denied on which AWS resources.
+Example:
+Allow → Read → S3 bucket
+4. Role
+A role provides permissions that can be assumed by trusted entities, such as AWS services, users, or applications. Roles are commonly used when an application or AWS service needs temporary access without storing long-term access keys.
+Root User vs IAM User
+Root User:
+•	Created when the AWS account is created.
+•	Has extremely broad/full account permissions.
+•	Should not be used for normal daily activities.
+•	Should be protected with MFA.
+IAM User/Role:
+•	Used for normal access and specific tasks.
+•	Permissions can be controlled using IAM policies.
+•	Helps implement least-privilege access.
+One important interview point
+IAM is mainly about authentication and authorization.
+•	Authentication → Who are you?
+•	Authorization → What are you allowed to do?
+Easy way to remember
+IAM = Who can access AWS + What they can access + What actions they can perform.
+The main goal of IAM is secure, controlled, least-privilege access to AWS resources.
+
+ 
+
+AWS IAM & AWS Organizations
+1. IAM Permission Policies
+•	Policies define what actions a user, group, or role can perform on AWS resources.
+•	IAM policies are written in JSON format.
+•	We can use AWS managed policies or create our own customer-managed policies.
+•	We should follow the Principle of Least Privilege — give only the permissions required.
+Example:
+A user may be allowed to:
+EC2 → Start/Stop instances
+but not:
+EC2 → Delete instances
+2. IAM Groups
+•	A group contains multiple IAM users with similar permissions.
+•	We can attach policies to the group so that users in that group receive those permissions.
+•	Users can be added to a group when the group is created or later.
+•	This makes permission management easier.
+Example:
+Developers Group → EC2 + S3 permissions
+3. AdministratorAccess vs Root
+•	AdministratorAccess provides very broad permissions through an IAM policy.
+•	It is similar to having administrative access, but it is not exactly the same as the AWS root user.
+•	The root user has the highest level of account authority and has some account-level actions that an IAM administrator cannot perform.
+•	Root should generally be used only for root-specific account tasks and protected with MFA.
+4. IAM Role
+•	An IAM role provides permissions that can be assumed by a trusted entity.
+•	Roles are commonly attached to AWS resources such as EC2 instances, allowing applications running on those instances to access other AWS services without storing access keys.
+Example:
+EC2 → IAM Role → S3 permissions
+The application running on EC2 can then access the required S3 resources.
+Important: A role does not automatically allow an EC2 server to connect to another server. The role provides AWS API permissions; network connectivity and the target service's permissions are separate.
+________________________________________
+AWS Organizations
+AWS Organizations helps centrally manage multiple AWS accounts.
+We can create separate accounts for different teams, departments, environments, or projects.
+Example:
+Production Account
+Development Account
+Testing Account
+Finance Account
+This provides better isolation, security, billing, and centralized management between accounts.
+SCP – Service Control Policy
+•	SCPs are used with AWS Organizations to set the maximum permissions available to accounts or organizational units (OUs).
+•	An SCP does not grant permissions by itself.
+•	It acts as a guardrail and can restrict what an account can do.
+Example:
+If an organization wants an account to operate only in the Mumbai (ap-south-1) region, an SCP can deny actions in other AWS regions.
+So even if an IAM user has permission to create an EC2 instance, the SCP can prevent that action outside the allowed region.
+Easy Difference to Remember
+IAM Policy:
+👉 What can this user/role do?
+SCP:
+👉 What is this AWS account allowed to do at maximum?
+IAM Role:
+👉 What permissions can a trusted user/service/resource assume?
+AWS Organizations:
+👉 How do we centrally manage multiple AWS accounts?
+Interview Memory Line
+IAM = Identity & permissions
+Role = Temporary/assumable permissions
+Policy = JSON-based permission rules
+Group = Collection of users
+Organizations = Manage multiple AWS accounts
+SCP = Guardrail/maximum permission boundary for accounts or OUs
+
+ 
+
+Temparary security batch 
+
+
+
+EC2 : 
+AWS EC2 – Elastic Compute Cloud
+EC2 = Elastic Compute Cloud
+Amazon EC2 is an AWS service that provides virtual servers (compute instances) in the cloud.
+Instead of purchasing and maintaining a physical server, we can create an EC2 instance and use it on-demand.
+Basic EC2 Flow
+Choose AMI → Choose Instance Type → Configure Key Pair → Configure Security Group → Launch EC2
+________________________________________
+1. AMI – Amazon Machine Image
+AMI = Amazon Machine Image
+An AMI is a template used to create an EC2 instance.
+It contains things such as:
+•	Operating system
+•	Required software/configuration
+•	Root volume information
+Example:
+Ubuntu AMI → Launch EC2 → Get an Ubuntu server.
+We can use AWS-provided AMIs or create our own custom AMI.
+________________________________________
+2. Instance Type
+Instance type determines the resources available to the EC2 server, such as:
+•	CPU
+•	Memory (RAM)
+•	Network performance
+•	Storage capabilities
+Example:
+t3.micro → small workload
+Different instance families are designed for different workloads.
+________________________________________
+3. Key Pair
+A key pair is used to securely authenticate to an EC2 instance.
+It contains:
+•	Public key → stored on the EC2 instance.
+•	Private key → kept by the user.
+For Linux EC2 instances, the private key is commonly used with SSH to connect without entering a normal password.
+Example:
+Laptop → SSH + Private Key → EC2 Linux Server
+Important: Never share or lose the private key.
+For Windows EC2 instances, key pairs are commonly used to obtain/decrypt the initial Administrator password.
+________________________________________
+4. Security Group
+A Security Group acts as a virtual firewall for an EC2 instance.
+It controls:
+•	Inbound traffic → traffic coming into the EC2 instance.
+•	Outbound traffic → traffic going out from the EC2 instance.
+Security groups are stateful, meaning return traffic for an allowed connection is automatically allowed.
+Common Ports
+Purpose	Protocol	Port
+SSH	TCP	22
+HTTP	TCP	80
+HTTPS	TCP	443
+RDP	TCP	3389
+For example:
+SSH enabled → Port 22 → allows SSH connection to Linux EC2
+HTTP enabled → Port 80 → allows web traffic
+HTTPS enabled → Port 443 → allows secure web traffic
+Security Best Practice
+Do not unnecessarily allow:
+SSH → 0.0.0.0/0
+This means SSH is open to the entire internet.
+Instead, restrict SSH access to a specific trusted IP/range where possible.
+________________________________________
+5. Public IP / Private IP
+An EC2 instance can have:
+•	Private IP → communication within the VPC/network.
+•	Public IPv4 address → allows internet communication when properly configured.
+•	Elastic IP → static public IPv4 address that can be associated with an instance/resource.
+________________________________________
+6. Storage
+EC2 commonly uses EBS (Elastic Block Store) for persistent block storage.
+Example:
+EC2 → EBS Volume → OS/Data
+________________________________________
+7. Important EC2 Terms
+AMI → Template used to launch an EC2 instance.
+Instance Type → Defines CPU, memory, and other compute characteristics.
+Key Pair → Used for secure authentication.
+Security Group → Controls inbound and outbound traffic.
+EBS → Persistent block storage for EC2.
+VPC → Virtual network in which the EC2 instance runs.
+Easy Interview Memory
+EC2 = Virtual server in AWS
+AMI = Server template
+Instance Type = CPU/RAM capacity
+Key Pair = Secure login/authentication
+Security Group = Virtual firewall
+Port 22 = SSH
+Port 80 = HTTP
+Port 443 = HTTPS
+EBS = Persistent storage
+VPC = Network for EC2
+
+Absolutely. Your basic understanding is correct, but a few points need correction—especially private IP, public IP, Elastic IP, and EBS. Here is a clean interview-ready version.
+AWS EC2 – IP Addresses & EBS Notes
+1. Public IP Address
+•	A public IP address is used for communication between an EC2 instance and the internet.
+•	It is not fixed by default.
+•	If you stop and start an EC2 instance, the public IP can change.
+•	If you only reboot the instance, the public IP normally remains the same.
+•	A public IP is automatically assigned when the instance is launched if the subnet/instance configuration allows it.
+Interview answer: 
+"A public IP is used for communication between an EC2 instance and the internet. By default, it is not a permanent IP and can change when the instance is stopped and started."
+________________________________________
+2. Private IP Address
+•	A private IP address is used for communication inside the VPC/private network.
+•	It can be used for communication between:
+o	EC2 → EC2
+o	EC2 → RDS
+o	EC2 → other AWS resources
+•	The primary private IP of an EC2 instance generally remains associated with the instance throughout its lifecycle.
+•	Private IPs are not directly reachable from the public internet.
+⚠️ Correction to your note:
+Don't say "Private IP is always static." A private IP can be dynamically assigned, but the primary private IP remains with the EC2 instance until the instance is terminated.
+Interview answer: 
+"A private IP is mainly used for internal communication within a VPC. It is not directly accessible from the internet."
+________________________________________
+3. Elastic IP Address (EIP)
+•	An Elastic IP is a static public IPv4 address provided by AWS.
+•	It remains associated with your AWS account until you release it.
+•	You can associate it with an EC2 instance.
+•	If the EC2 instance is stopped and started, the Elastic IP remains the same when it is still associated.
+•	It is useful when you need a fixed public IP, for example:
+o	Public-facing application
+o	Whitelisted IP
+o	Server that needs a fixed address
+Important: AWS now charges for public IPv4 addresses, including Elastic IPs, so don't simply say "Elastic IP is chargeable only when used." Say:
+"Elastic IP/public IPv4 addresses are chargeable under AWS's current public IPv4 pricing."
+________________________________________
+4. EBS – Elastic Block Store
+EBS = Elastic Block Store
+Think of EBS as a virtual hard disk for an EC2 instance.
+It provides persistent block-level storage that can be attached to an EC2 instance.
+Why do we use EBS?
+For storing:
+•	Operating system
+•	Application files
+•	Database files
+•	Logs
+•	Data files
+For example:
+EC2 Instance
+     |
+     |---- Root EBS Volume → Operating System
+     |
+     |---- Additional EBS Volume → Application/Data
+Important EBS points
+•	EBS is block storage.
+•	An EBS volume exists independently of the EC2 instance's compute resources.
+•	You can attach additional EBS volumes to an EC2 instance.
+•	You can increase the size of an EBS volume later.
+•	You can take EBS snapshots for backup/recovery.
+•	EBS volumes are normally associated with a specific Availability Zone.
+•	EBS provides persistent storage, so data can remain even when an EC2 instance is stopped.
+________________________________________
+5. EBS Volume Types
+One important type is General Purpose SSD.
+GP2
+•	Older/general-purpose SSD volume type.
+•	Performance is linked to volume size.
+•	IOPS are automatically calculated based on the volume size.
+GP3
+•	Newer and generally preferred for new workloads.
+•	You can independently configure:
+o	Volume size
+o	IOPS
+o	Throughput
+•	You don't necessarily need to increase the disk size just to get more IOPS.
+Simple interview difference:
+gp2: Performance/IOPS is tied more closely to volume size.
+gp3: Storage size, IOPS and throughput can be configured more independently.
+________________________________________
+6. Creating Additional EBS Volumes
+Yes, you can create additional volumes later.
+For example:
+EC2
+ |
+ |--- Root Volume
+ |      100 GB
+ |
+ |--- EBS Volume 1
+ |      200 GB → Application
+ |
+ |--- EBS Volume 2
+        500 GB → Database
+Typical process:
+1.	Create an EBS volume.
+2.	Select the required size/type.
+3.	Select the same Availability Zone as the EC2 instance.
+4.	Attach the volume to the EC2 instance.
+5.	Inside the operating system, identify the new disk.
+6.	Format it if required.
+7.	Mount it to a directory.
+8.	Start using it for application/data storage.
+________________________________________
+⭐ Important Interview Points to Remember
+Topic	Simple answer
+Public IP	Used for internet communication; can change after stop/start
+Private IP	Used for internal VPC communication
+Elastic IP	Static public IPv4 address
+EBS	Persistent block storage for EC2
+EBS Snapshot	Point-in-time backup of an EBS volume
+gp2	Older general-purpose SSD; IOPS tied to volume size
+gp3	Newer general-purpose SSD; size, IOPS and throughput configurable independently
+Additional EBS	Can attach additional storage to EC2
+EBS AZ	Volume is tied to an Availability Zone
+One good interview answer
+If the interviewer asks "What is EBS and how do you add storage to an EC2 instance?", you can say:
+"EBS stands for Elastic Block Store. It provides persistent block-level storage for EC2 instances, similar to a virtual hard disk. We can use EBS for operating system, application, database and log files. If we need additional storage, we can create a new EBS volume in the same Availability Zone as the EC2 instance, attach it to the instance, configure it inside the operating system and mount it for use. We can also take EBS snapshots for backup and recovery. For general-purpose SSD, gp3 is commonly preferred because size, IOPS and throughput can be configured independently."
+
+AWS EBS (Elastic Block Store)
+EBS = Elastic Block Store
+EBS provides persistent block storage for EC2 instances. It works like a hard disk attached to an EC2 server.
+1. EBS Volume Size
+•	EBS volume size can generally be increased.
+•	You cannot directly decrease/shrink an existing EBS volume.
+•	If you need a smaller volume, typically:
+1.	Create a snapshot.
+2.	Create a new smaller volume from the required data.
+3.	Attach the new volume to the server.
+•	EBS volumes are persistent, so data remains even if the EC2 instance is stopped or restarted.
+2. One EBS Volume → Multiple Servers
+•	Normally, one EBS volume is attached to one EC2 instance at a time.
+•	However, EBS Multi-Attach allows certain EBS volume types, such as io1/io2, to be attached to multiple compatible EC2 instances simultaneously.
+•	Multi-Attach has specific limitations and is not the normal use case.
+Interview point:
+Don't say "one EBS volume can always be attached to multiple servers." Say EBS Multi-Attach supports multiple EC2 instances for supported volume types and configurations.
+3. Detach and Attach EBS
+An EBS volume can be:
+EC2 Server A → Detach → EC2 Server B → Attach
+Important:
+•	The EC2 instances should generally be in the same Availability Zone as the EBS volume.
+•	EBS volumes are AZ-specific, not directly attachable across AZs.
+•	To use the data in another AZ, you can create a snapshot and create a new EBS volume in the required AZ.
+4. EBS Snapshot
+A snapshot is a point-in-time backup of an EBS volume.
+Example:
+EBS Volume → Snapshot → New EBS Volume
+Important points:
+•	Snapshot is stored in Amazon S3-managed storage by AWS.
+•	You can use a snapshot to create a new EBS volume.
+•	The new volume can then be attached to another EC2 instance.
+•	Snapshots are incremental after the first snapshot, so only changed blocks need to be stored.
+•	Snapshots can be used for backup, restore, migration, and creating copies of volumes.
+•	You can copy snapshots to another Region and create an EBS volume there.
+Important Correction
+A snapshot is not an EC2 instance backup in the same sense as a full server image.
+•	EBS Snapshot → Backup of an EBS volume.
+•	AMI (Amazon Machine Image) → Used to create new EC2 instances with an OS/configuration and attached volume information.
+So remember:
+EBS Snapshot = Volume backup
+AMI = EC2 image/template
+________________________________________
+EC2 User Data
+EC2 User Data allows us to automatically run commands/scripts when an EC2 instance is launched.
+It is commonly used for bootstrapping a server.
+Why do we use User Data?
+Suppose we launch a new Linux EC2 server and want to automatically:
+•	Install Apache/Nginx
+•	Install Docker
+•	Install required packages
+•	Create directories
+•	Start services
+•	Download application files
+•	Perform initial server configuration
+Instead of doing these manually, we can put commands in User Data.
+Example
+#!/bin/bash
+
+yum update -y
+yum install -y httpd
+systemctl start httpd
+systemctl enable httpd
+When the EC2 instance starts, these commands can automatically configure the server.
+Important Points
+•	User Data is mainly used for initial instance configuration / bootstrapping.
+•	It can contain shell scripts on Linux.
+•	Windows EC2 instances can use PowerShell/Windows commands.
+•	User Data is provided when launching the EC2 instance.
+•	It is useful for automation and reducing manual configuration.
+•	User Data is not a replacement for configuration-management/IaC tools such as Terraform, Ansible, etc.
+•	Be careful about putting passwords, API keys, or secrets directly in User Data because it is not a good place for sensitive information.
+Easy Interview Definition
+EC2 User Data is a script or set of commands that can be provided during EC2 launch to automatically bootstrap and configure the instance.
+________________________________________
+Quick Interview Revision
+Topic	Remember
+EBS	Persistent block storage for EC2
+Increase EBS	Can increase volume size
+Decrease EBS	Cannot directly shrink an existing volume
+Detach/Attach	Can move an EBS volume between compatible EC2 instances in the same AZ
+Multi-Attach	Allows supported EBS volumes to attach to multiple EC2 instances
+Snapshot	Point-in-time backup of an EBS volume
+Snapshot → Volume	Can create a new EBS volume from snapshot
+Snapshot → Other Region	Copy snapshot to another Region and create volume there
+AMI	Template/image used to launch EC2 instances
+User Data	Automatically runs bootstrap commands/scripts
+Bootstrap	Initial automatic server configuration
+Security	Avoid storing passwords/secrets directly in User Data
+⭐ Most Important Difference
+EBS → Disk/Storage
+Snapshot → Backup of EBS volume
+AMI → Template for launching EC2
+User Data → Script for initial EC2 configuration
+
+Load balancer : 
+   AWS Load Balancer (ELB)
+What is a Load Balancer?
+A Load Balancer distributes incoming client traffic across multiple servers/EC2 instances.
+Why do we use a Load Balancer?
+When one server receives too much traffic, it can become:
+•	Overloaded
+•	Slow
+•	Unresponsive
+•	A single point of failure
+Instead of sending all traffic to one server, the Load Balancer distributes the traffic among multiple healthy servers.
+Simple Example
+Without Load Balancer:
+Users → Server 1
+If Server 1 becomes overloaded or fails → Application becomes unavailable
+With Load Balancer:
+Users → Load Balancer → Server 1
+** → Server 2**
+** → Server 3**
+If Server 1 fails, the Load Balancer can stop sending traffic to Server 1 and send traffic to the healthy servers.
+________________________________________
+Types of AWS Load Balancers
+AWS provides different types of Load Balancers:
+1. Application Load Balancer (ALB)
+•	Works at OSI Layer 7 – Application Layer.
+•	Used mainly for HTTP and HTTPS traffic.
+•	Can make routing decisions based on:
+o	Hostname
+o	URL path
+o	HTTP headers
+o	Query parameters
+•	Commonly used for web applications and microservices.
+Example:
+example.com/orders → Orders service
+example.com/products → Products service
+2. Network Load Balancer (NLB)
+•	Works primarily at OSI Layer 4 – Transport Layer.
+•	Supports TCP, UDP and TLS traffic.
+•	Designed for very high performance and low latency.
+•	Useful when applications need high network throughput and connection performance.
+3. Gateway Load Balancer (GWLB)
+•	Works at OSI Layer 3 – Network Layer.
+•	Used mainly to deploy and scale network/security appliances.
+•	Examples:
+o	Firewalls
+o	Intrusion detection/prevention systems
+o	Deep packet inspection appliances
+________________________________________
+OSI Layer – Easy Remembering
+Load Balancer	OSI Layer	Common Use
+ALB	Layer 7	HTTP/HTTPS web applications
+NLB	Layer 4	TCP/UDP/TLS, high performance
+GWLB	Layer 3	Security/network appliances
+Easy Interview Trick
+ALB → Application → Layer 7
+NLB → Network traffic → Layer 4
+GWLB → Gateway/network → Layer 3
+________________________________________
+Target Group
+A Target Group is a logical group of backend resources where the Load Balancer sends traffic.
+Targets can include:
+•	EC2 instances
+•	IP addresses
+•	Lambda functions (for ALB)
+Important Point
+The client does not normally directly communicate with the backend server when using a Load Balancer.
+The flow is:
+Client → Load Balancer → Target Group → Healthy Target
+For example:
+User
+↓
+ALB
+↓
+Target Group
+↓
+EC2-1 / EC2-2 / EC2-3
+The Target Group helps the Load Balancer determine which backend targets should receive traffic.
+________________________________________
+Health Checks
+The Load Balancer performs health checks on targets.
+Example:
+ALB
+ ↓
+Target Group
+ ↓
+EC2-1 → Healthy ✅
+EC2-2 → Healthy ✅
+EC2-3 → Unhealthy ❌
+The Load Balancer sends traffic only to the healthy targets.
+If EC2-3 becomes healthy again, it can be added back into traffic distribution.
+________________________________________
+Load Balancer and High Availability
+Load Balancers help achieve:
+•	High availability
+•	Fault tolerance
+•	Scalability
+•	Traffic distribution
+•	Reduced impact of server failure
+For production applications, we generally place backend servers across multiple Availability Zones.
+Example:
+                    Load Balancer
+                         |
+              -----------------------
+              |                     |
+             AZ-1                  AZ-2
+              |                     |
+           EC2-1                 EC2-2
+           EC2-3                 EC2-4
+If one server or even one Availability Zone has a problem, traffic can be directed to healthy targets.
+________________________________________
+⭐ Interview Answer
+Question: Why do we use a Load Balancer?
+A Load Balancer distributes incoming traffic across multiple backend servers. It prevents a single server from becoming overloaded and improves application availability and fault tolerance. It also performs health checks and avoids sending traffic to unhealthy targets.
+Question: What is a Target Group?
+A Target Group is a logical group of backend targets such as EC2 instances, IP addresses, or Lambda functions. The Load Balancer uses the Target Group to route traffic to healthy targets.
+Question: What is the difference between ALB and NLB?
+ALB works at Layer 7 and is mainly used for HTTP/HTTPS traffic with application-level routing. NLB works at Layer 4 and is designed for high-performance TCP, UDP, and TLS traffic.
+⭐ Remember This Flow
+Client → Load Balancer → Target Group → Healthy EC2
+And:
+ALB = L7
+NLB = L4
+GWLB = L3
+
+
+AWS Auto Scaling
+What is Auto Scaling?
+Auto Scaling automatically increases or decreases the number of EC2 instances based on application demand.
+It helps the application handle increased traffic while avoiding unnecessary infrastructure costs when traffic is low.
+Simple Example
+Suppose our application normally needs 2 servers:
+Normal Traffic
+      ↓
+Auto Scaling Group
+      ↓
+EC2-1 + EC2-2
+If traffic increases:
+High Traffic
+      ↓
+Auto Scaling Group
+      ↓
+EC2-1 + EC2-2 + EC2-3 + EC2-4
+When traffic decreases, unnecessary instances can be terminated:
+Low Traffic
+      ↓
+Auto Scaling Group
+      ↓
+EC2-1 + EC2-2
+This is called scaling out and scaling in.
+________________________________________
+Auto Scaling Group (ASG)
+An Auto Scaling Group (ASG) manages a collection of EC2 instances.
+We define important settings such as:
+1. Minimum Capacity
+The minimum number of EC2 instances that should normally be running.
+Example:
+Minimum = 2
+The ASG tries to maintain at least 2 instances.
+2. Desired Capacity
+The normal/desired number of EC2 instances we want running.
+Example:
+Desired = 2
+3. Maximum Capacity
+The maximum number of EC2 instances that the ASG is allowed to launch.
+Example:
+Maximum = 5
+So:
+Minimum  = 2
+Desired  = 2
+Maximum  = 5
+If traffic increases, ASG can increase:
+2 → 3 → 4 → 5
+But it will not go beyond the configured maximum of 5.
+________________________________________
+Scaling Out and Scaling In
+Scale Out
+When demand/traffic increases, Auto Scaling adds EC2 instances.
+2 EC2
+  ↓
+High traffic
+  ↓
+3 EC2
+  ↓
+4 EC2
+Scale Out = Add servers
+Scale In
+When demand decreases, Auto Scaling removes EC2 instances.
+5 EC2
+  ↓
+Low traffic
+  ↓
+3 EC2
+  ↓
+2 EC2
+Scale In = Remove servers
+________________________________________
+Fault Tolerance
+Auto Scaling improves fault tolerance.
+For example:
+ASG
+ |
+ ├── EC2-1 ✅
+ ├── EC2-2 ✅
+ └── EC2-3 ❌
+If an EC2 instance becomes unhealthy or fails, the Auto Scaling Group can launch a replacement instance to maintain the required capacity.
+For better availability, EC2 instances can be distributed across multiple Availability Zones.
+________________________________________
+Cost Management
+Auto Scaling can help control costs.
+High traffic
+More instances are launched:
+2 → 4 → 5 EC2
+This provides enough capacity for users.
+Low traffic
+Unnecessary instances are removed:
+5 → 3 → 2 EC2
+This prevents us from paying for more EC2 capacity than we need.
+So Auto Scaling helps balance:
+Performance + Availability + Cost
+________________________________________
+Auto Scaling + Load Balancer
+Auto Scaling is commonly used together with a Load Balancer.
+                    Users
+                      ↓
+               Load Balancer
+                      ↓
+              Target Group
+                      ↓
+        -------------------------
+        ↓           ↓           ↓
+      EC2-1       EC2-2       EC2-3
+        ↑           ↑           ↑
+        └──── Auto Scaling ─────┘
+The Load Balancer distributes traffic, while the Auto Scaling Group manages the number of EC2 instances.
+Easy Difference
+Load Balancer → Distributes traffic
+Auto Scaling → Adjusts number of servers
+________________________________________
+⭐ Interview Answer
+What is Auto Scaling?
+AWS Auto Scaling automatically adjusts the number of EC2 instances based on application demand. It can launch additional instances when traffic increases and terminate unnecessary instances when traffic decreases. This helps improve availability, fault tolerance, scalability, and cost efficiency.
+⭐ Remember
+Minimum → Lowest number of instances
+Desired → Normal/target number of instances
+Maximum → Highest number of instances
+Scale Out → Add EC2 instances
+Scale In → Remove EC2 instances
+Load Balancer → Distributes traffic
+Auto Scaling → Changes the number of servers
+ 
